@@ -1,4 +1,5 @@
 import Link from '@/components/link'
+import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { ArrowLeft } from 'lucide-react'
 import React from 'react'
@@ -35,9 +36,17 @@ const RunPayrollLayout: React.FC<Props> = ({ children }) => {
           </div>
         ))}
       </div>
-      <div className="fixed top-16 left-64 right-0 bottom-0 overflow-y-auto">
+      <div className="fixed top-16 left-64 right-0 bottom-16 overflow-y-auto py-4">
         {children}
       </div>
+      <footer className="bottom-0 left-64 right-0 h-16 flex items-center justify-end gap-2 fixed border-t border-gray-200 px-4">
+        <Button variant="outline" size="sm" className="w-40">
+          Previous
+        </Button>
+        <Button size="sm" className="w-40">
+          Next
+        </Button>
+      </footer>
     </main>
   )
 }

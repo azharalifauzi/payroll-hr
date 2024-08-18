@@ -55,12 +55,15 @@ const columns = [
   columnHelper.accessor('periodFrom', {
     header: () => <span>Payroll Period</span>,
     cell: (info) => (
-      <span className="font-semibold">
-        {dayjs(info.getValue()).format('MMM Do')}-
-        {dayjs(info.row.original.periodTo).format('Do, YYYY')}
-      </span>
+      <div>
+        <div className="font-semibold">
+          Monthly Salary: {dayjs(info.getValue()).format('MMM Do')}-
+          {dayjs(info.row.original.periodTo).format('Do, YYYY')}
+        </div>
+        <div className="text-xs text-gray-400">Regular</div>
+      </div>
     ),
-    maxSize: 100,
+    maxSize: 120,
   }),
   columnHelper.accessor('totalPayroll', {
     header: () => (
@@ -74,7 +77,7 @@ const columns = [
     maxSize: 80,
   }),
   columnHelper.accessor('totalAmount', {
-    header: () => <span>Total Amount</span>,
+    header: () => <span>Total Payment</span>,
     cell: (info) => (
       <span>
         {new Intl.NumberFormat('id-ID', {
@@ -85,7 +88,7 @@ const columns = [
     ),
   }),
   columnHelper.accessor('paidAt', {
-    header: () => <span>Pay Day</span>,
+    header: () => <span>Pay Date</span>,
     cell: (info) => (
       <span>{dayjs(info.getValue()).format('MMM Do, YYYY')}</span>
     ),
@@ -124,7 +127,7 @@ const StaffFeature = () => {
         <Button size="sm" className="px-4" asChild>
           <Link to="/payroll/run">
             <Play className="h-4 w-4 mr-2" />
-            Run Payroll
+            Run Monthly Payroll
           </Link>
         </Button>
       </div>
