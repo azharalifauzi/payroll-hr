@@ -1,0 +1,13 @@
+---
+import Layout from '@/layouts/Layout.astro'
+import SignupFeature from '@/features/login/sign-up'
+---
+
+<Layout className="overflow-hidden">
+  <SignupFeature
+    client:load
+    url={Astro.url}
+    user={Astro.locals.user}
+    params={Astro.params}
+  />
+</Layout>

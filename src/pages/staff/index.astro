@@ -1,0 +1,13 @@
+---
+import StaffFeature from '@/features/staff'
+import Layout from '@/layouts/Layout.astro'
+---
+
+<Layout>
+  <StaffFeature
+    client:load
+    params={Astro.params}
+    url={Astro.url}
+    user={Astro.locals.user}
+  />
+</Layout>

@@ -1,0 +1,13 @@
+---
+import PayrollFeature from '@/features/payroll'
+import Layout from '@/layouts/Layout.astro'
+---
+
+<Layout>
+  <PayrollFeature
+    client:load
+    params={Astro.params}
+    url={Astro.url}
+    user={Astro.locals.user}
+  />
+</Layout>

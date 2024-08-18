@@ -1,0 +1,13 @@
+---
+import RunPayrollFeature from '@/features/payroll/run'
+import Layout from '@/layouts/Layout.astro'
+---
+
+<Layout>
+  <RunPayrollFeature
+    client:load
+    params={Astro.params}
+    url={Astro.url}
+    user={Astro.locals.user}
+  />
+</Layout>
