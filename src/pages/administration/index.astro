@@ -1,0 +1,13 @@
+---
+import AdministrationFeature from '@/features/administration'
+import Layout from '@/layouts/Layout.astro'
+---
+
+<Layout>
+  <AdministrationFeature
+    client:load
+    params={Astro.params}
+    url={Astro.url}
+    user={Astro.locals.user}
+  />
+</Layout>

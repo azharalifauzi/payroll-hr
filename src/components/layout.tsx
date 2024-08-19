@@ -35,7 +35,10 @@ const sidebarList = [
   },
 ]
 
-const Layout: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
+const Layout: React.FC<{ children?: React.ReactNode; className?: string }> = ({
+  children,
+  className,
+}) => {
   const { user, getDefaultOrgPermission } = useUser()
 
   return (
@@ -107,7 +110,12 @@ const Layout: React.FC<{ children?: React.ReactNode }> = ({ children }) => {
           </button>
         </div>
       </div>
-      <div className="fixed bottom-0 right-0 top-[92px] left-[270px] overflow-y-auto p-5">
+      <div
+        className={cn(
+          'fixed bottom-0 right-0 top-[92px] left-[270px] overflow-y-auto p-5',
+          className
+        )}
+      >
         {children}
       </div>
     </main>
