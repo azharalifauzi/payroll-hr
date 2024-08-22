@@ -1,0 +1,13 @@
+---
+import EditStaff from '@/features/staff/edit'
+import Layout from '@/layouts/Layout.astro'
+---
+
+<Layout>
+  <EditStaff
+    client:load
+    params={Astro.params}
+    url={Astro.url}
+    user={Astro.locals.user}
+  />
+</Layout>

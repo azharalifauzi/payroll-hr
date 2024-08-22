@@ -12,6 +12,9 @@ import type { User } from '@/server/services/user'
 import { UserContextProvider } from '@/hooks/user'
 import advancedFormat from 'dayjs/plugin/advancedFormat'
 import dayjs from 'dayjs'
+import { Toaster } from '@/components/ui/sonner'
+import '@/styles/globals.css'
+import '@/styles/sonner.css'
 
 dayjs.extend(advancedFormat)
 
@@ -69,18 +72,37 @@ const Providers: React.FC<GlobalProvidersProps> = ({
   user,
 }) => {
   return (
-    <UserContextProvider value={user}>
-      <RouteContextProvider
-        value={{
-          params,
-          url,
-        }}
-      >
-        <QueryClientProvider client={queryClient}>
-          {children}
-        </QueryClientProvider>
-      </RouteContextProvider>
-    </UserContextProvider>
+    <>
+      <UserContextProvider value={user}>
+        <RouteContextProvider
+          value={{
+            params,
+            url,
+          }}
+        >
+          <QueryClientProvider client={queryClient}>
+            {children}
+          </QueryClientProvider>
+        </RouteContextProvider>
+      </UserContextProvider>
+      {process.env.NODE_ENV === 'development' && (
+        <script
+          suppressHydrationWarning
+          type="module"
+          dangerouslySetInnerHTML={{
+            __html: `
+          import RefreshRuntime from "/@react-refresh"
+          if (typeof window !== 'undefined') {
+            RefreshRuntime.injectIntoGlobalHook(window)
+            window.$RefreshReg$ = () => {}
+            window.$RefreshSig$ = () => (type) => type
+            window.__vite_plugin_react_preamble_installed__ = true
+          }
+        `,
+          }}
+        />
+      )}
+    </>
   )
 }
 
@@ -100,6 +122,7 @@ export function withGlobalProviders<P extends object = {}>(
     return (
       <Providers params={params} url={url} user={user}>
         <WrappedComponent {...(rest as P)} />;
+        <Toaster />
       </Providers>
     )
   }

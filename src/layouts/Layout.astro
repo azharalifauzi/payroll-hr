@@ -2,9 +2,6 @@
 import { AstroFont } from 'astro-font'
 import { ViewTransitions } from 'astro:transitions'
 import LoadingIndicator from 'astro-loading-indicator/component'
-import '@/styles/globals.css'
-import '@/styles/sonner.css'
-import { Toaster } from '@/components/ui/sonner'
 
 interface Props {
   title?: string
@@ -63,6 +60,5 @@ const {
   </head>
   <body class={className}>
     <slot />
-    <Toaster client:only="react" />
   </body>
 </html>

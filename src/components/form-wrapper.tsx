@@ -1,4 +1,3 @@
-import React from 'react'
 import { useFormContext, type UseFormReturn } from 'react-hook-form'
 import {
   Form,
@@ -17,6 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from './ui/select'
+import type React from 'react'
 
 interface ItemBase {
   label?: React.ReactNode
@@ -27,7 +27,7 @@ interface ItemBase {
 interface Container<T extends Record<string, any>> {
   type: 'container'
   key: keyof T | (string & {})
-  props?: React.PropsWithoutRef<HTMLDivElement>
+  props?: React.HTMLAttributes<HTMLDivElement>
   children?: Item<T>[]
 }
 
@@ -35,12 +35,14 @@ interface Input<T> extends ItemBase {
   type: 'input'
   key: keyof T | (string & {})
   props?: InputProps
+  formItemProps?: React.HTMLAttributes<HTMLDivElement>
 }
 
 interface Select<T> extends ItemBase {
   type: 'select'
   key: keyof T | (string & {})
   options: { value: string; label: string }[]
+  formItemProps?: React.HTMLAttributes<HTMLDivElement>
 }
 
 interface Custom<T extends Record<string, any>> {
@@ -60,20 +62,22 @@ export interface FormConfig<T extends Record<string, any>> {
   children?: Item<T>[]
 }
 
-interface Props {
+interface Props<T extends object> {
   form: UseFormReturn<any>
-  config: FormConfig<Record<string, any>>
+  config: FormConfig<T>
 }
 
-const ItemComponent = (props: Item<Record<string, any>>) => {
+const ItemComponent = (
+  props: Item<Record<string, any>> & { formKey: string }
+) => {
   const form = useFormContext()
   const { control } = form
 
   if (props.type === 'container') {
     return (
-      <div key={props.key}>
+      <div key={props.formKey} {...props.props}>
         {props.children?.map((childItem) => (
-          <ItemComponent {...childItem} />
+          <ItemComponent {...childItem} formKey={childItem.key} />
         ))}
       </div>
     )
@@ -83,9 +87,9 @@ const ItemComponent = (props: Item<Record<string, any>>) => {
     return (
       <FormField
         control={control}
-        name={props.key}
+        name={props.formKey}
         render={({ field }) => (
-          <FormItem>
+          <FormItem {...props.formItemProps}>
             {props.label && <FormLabel>{props.label}</FormLabel>}
             <FormControl>
               <Input
@@ -108,9 +112,9 @@ const ItemComponent = (props: Item<Record<string, any>>) => {
     return (
       <FormField
         control={control}
-        name={props.key}
+        name={props.formKey}
         render={({ field }) => (
-          <FormItem>
+          <FormItem {...props.formItemProps}>
             {props.label && <FormLabel>{props.label}</FormLabel>}
             <FormControl>
               <Select defaultValue={field.value} onValueChange={field.onChange}>
@@ -143,21 +147,36 @@ const ItemComponent = (props: Item<Record<string, any>>) => {
   return null
 }
 
-const FormWrapper: React.FC<Props> = ({ form, config }) => {
+function FormWrapper<T extends Record<string, any>>({
+  config,
+  form,
+}: Props<T>) {
   return (
     <Form {...form}>
       {config.children?.map((item) => {
         if (item.type === 'container') {
           return (
-            <div key={item.key}>
+            <div key={item.key as string} {...item.props}>
               {item.children?.map((childItem) => (
-                <ItemComponent {...childItem} />
+                // @ts-ignore
+                <ItemComponent
+                  {...childItem}
+                  key={childItem.key as string}
+                  formKey={childItem.key as string}
+                />
               ))}
             </div>
           )
         }
 
-        return <ItemComponent {...item} />
+        return (
+          // @ts-ignore
+          <ItemComponent
+            {...item}
+            key={item.key as string}
+            formKey={item.key as string}
+          />
+        )
       })}
     </Form>
   )
