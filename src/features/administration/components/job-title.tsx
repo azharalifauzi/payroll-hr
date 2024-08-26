@@ -13,7 +13,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import { Ellipsis } from 'lucide-react'
-import React from 'react'
+import JobTitleForm from './job-title-form'
 
 interface Title {
   id: number
@@ -95,7 +95,9 @@ const JobTitle = () => {
     <div className="px-5">
       <div className="flex items-center justify-between mb-4">
         <div className="text-xl font-semibold">Job Title</div>
-        <Button size="sm">Add Job Title</Button>
+        <JobTitleForm>
+          <Button size="sm">Add Job Title</Button>
+        </JobTitleForm>
       </div>
       <Table table={table} />
     </div>

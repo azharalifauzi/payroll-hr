@@ -13,6 +13,7 @@ import {
   useReactTable,
 } from '@tanstack/react-table'
 import { Ellipsis } from 'lucide-react'
+import AllowancesForm from './allowances-form'
 
 interface Allowance {
   id: number
@@ -46,7 +47,7 @@ const columnHelper = createColumnHelper<Allowance>()
 
 const columns = [
   columnHelper.accessor('name', {
-    header: () => <span>ALlowance</span>,
+    header: () => <span>Allowance</span>,
     cell: (info) => <span>{info.getValue()}</span>,
   }),
   columnHelper.accessor('amount', {
@@ -107,7 +108,9 @@ const Allowances = () => {
     <div className="px-5">
       <div className="flex items-center justify-between mb-4">
         <div className="text-xl font-semibold">Allowances</div>
-        <Button size="sm">Add Allowance</Button>
+        <AllowancesForm>
+          <Button size="sm">Add Allowance</Button>
+        </AllowancesForm>
       </div>
       <Table table={table} />
     </div>

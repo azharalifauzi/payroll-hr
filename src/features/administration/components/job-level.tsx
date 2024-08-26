@@ -14,6 +14,7 @@ import {
 } from '@tanstack/react-table'
 import { Ellipsis } from 'lucide-react'
 import React from 'react'
+import JobLevelForm from './job-level-form'
 
 interface Level {
   id: number
@@ -98,7 +99,9 @@ const JobLevel = () => {
     <div className="px-5">
       <div className="flex items-center justify-between mb-4">
         <div className="text-xl font-semibold">Job Level</div>
-        <Button size="sm">Add Job Level</Button>
+        <JobLevelForm>
+          <Button size="sm">Add Job Level</Button>
+        </JobLevelForm>
       </div>
       <Table table={table} />
     </div>

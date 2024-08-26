@@ -36,6 +36,7 @@ interface Input<T> extends ItemBase {
   key: keyof T | (string & {})
   props?: InputProps
   formItemProps?: React.HTMLAttributes<HTMLDivElement>
+  isNumeric?: boolean
 }
 
 interface Select<T> extends ItemBase {
@@ -60,6 +61,7 @@ type Item<T extends Record<string, any>> =
 export interface FormConfig<T extends Record<string, any>> {
   type: 'root'
   children?: Item<T>[]
+  props?: React.HTMLAttributes<HTMLDivElement>
 }
 
 interface Props<T extends object> {
@@ -84,6 +86,8 @@ const ItemComponent = (
   }
 
   if (props.type === 'input') {
+    const { isNumeric } = props
+
     return (
       <FormField
         control={control}
@@ -96,6 +100,43 @@ const ItemComponent = (
                 placeholder={props.placeholder}
                 {...field}
                 {...props.props}
+                onChange={(e) => {
+                  const { value } = e.target
+
+                  if (!isNumeric) {
+                    field.onChange(value)
+                    return
+                  }
+
+                  if (value.endsWith(',') && value.split(',').length < 3) {
+                    field.onChange(value)
+                    return
+                  }
+
+                  const normalizedValue = value
+                    .split('.')
+                    .join('')
+                    .split(',')
+                    .join('.')
+                  const valueAsNum = Number(normalizedValue)
+
+                  if (isNaN(valueAsNum)) {
+                    return
+                  }
+
+                  if (
+                    normalizedValue.endsWith('0') &&
+                    normalizedValue.includes('.')
+                  ) {
+                    field.onChange(value)
+                    return
+                  }
+
+                  const parsed = new Intl.NumberFormat('id-ID', {
+                    maximumFractionDigits: 100,
+                  }).format(valueAsNum)
+                  field.onChange(parsed)
+                }}
               />
             </FormControl>
             {props.description && (
@@ -153,31 +194,33 @@ function FormWrapper<T extends Record<string, any>>({
 }: Props<T>) {
   return (
     <Form {...form}>
-      {config.children?.map((item) => {
-        if (item.type === 'container') {
-          return (
-            <div key={item.key as string} {...item.props}>
-              {item.children?.map((childItem) => (
-                // @ts-ignore
-                <ItemComponent
-                  {...childItem}
-                  key={childItem.key as string}
-                  formKey={childItem.key as string}
-                />
-              ))}
-            </div>
-          )
-        }
+      <div {...config.props}>
+        {config.children?.map((item) => {
+          if (item.type === 'container') {
+            return (
+              <div key={item.key as string} {...item.props}>
+                {item.children?.map((childItem) => (
+                  // @ts-ignore
+                  <ItemComponent
+                    {...childItem}
+                    key={childItem.key as string}
+                    formKey={childItem.key as string}
+                  />
+                ))}
+              </div>
+            )
+          }
 
-        return (
-          // @ts-ignore
-          <ItemComponent
-            {...item}
-            key={item.key as string}
-            formKey={item.key as string}
-          />
-        )
-      })}
+          return (
+            // @ts-ignore
+            <ItemComponent
+              {...item}
+              key={item.key as string}
+              formKey={item.key as string}
+            />
+          )
+        })}
+      </div>
     </Form>
   )
 }
